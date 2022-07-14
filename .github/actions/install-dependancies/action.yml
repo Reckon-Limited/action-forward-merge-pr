@@ -21,6 +21,5 @@ runs:
           ${{ runner.os }}-node-
 
     - name: Install Dependencies
-      if: steps.npm-cache.outputs.cache-hit != 'true'
       shell: bash
       run: npm install
