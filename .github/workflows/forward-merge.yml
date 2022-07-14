@@ -1,0 +1,17 @@
+name: 'forward-merge'
+on:
+  push:
+    branches:
+      - support/*
+      - main
+  workflow_dispatch:
+
+jobs:
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 # use because we have to checkout our own code for local files
+      - uses: ./
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          branches: support/v3+main,main+prerelease/v5

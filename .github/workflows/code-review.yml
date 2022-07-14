@@ -1,0 +1,55 @@
+name: Code review
+
+#  This Workflow handles code review for pull requests targeting two main branches:
+#  - into the mainline `master` branch
+#  - into a release branch
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+#
+# We need to force nodejs to use more memory, otherwise it limits
+# itself to just 512mb
+env:
+  NODE_OPTIONS: --max-old-space-size=8096
+
+jobs:
+  Changes:
+    runs-on: ubuntu-latest
+    #
+    # Allow the actions to write back to the repo
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+      #
+      # Setup development/build tooling
+      - name: Provision
+        uses: ./.github/actions/setup-tooling
+
+      - name: Dependancies
+        uses: ./.github/actions/install-dependancies
+
+      - name: Format
+        run: npm run format
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: 🚚 Pushing new changes
+        uses: stefanzweifel/git-auto-commit-action@789f58e41a0d5e3af8438b58272ab02db9438f80
+
+      - uses: hmarr/auto-approve-action@v2
+        if: github.actor == 'dependabot[bot]'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

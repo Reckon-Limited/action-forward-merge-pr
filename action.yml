@@ -1,0 +1,22 @@
+name: 'Release Fixes to Mainline Pullrequest'
+description: 'Create a forward merge pull request to merge hotfixes of a release branch back to your mainline.'
+author: 'Nicholas Boll'
+branding:
+  icon: 'git-merge'
+  color: 'orange'
+inputs:
+  branches:
+    description: 'Comma-separated list of branches with a plus sign for a branch that that will be merged into the other branch: "support/v3+support/v4,support/v4+main" will ensure "support/v3" is merged into "support/v4".'
+    required: true
+  token:
+    description: 'Github API Token - must be a write token allowing access to the repo'
+    required: false
+  body:
+    description: 'Body message of the pull request. It is not required'
+    required: false
+  prefix:
+    description: 'Optional prefix to the PR title. Useful if you use some type of semantic commit pull request title validator'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

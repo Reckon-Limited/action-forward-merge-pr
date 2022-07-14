@@ -1,0 +1,26 @@
+name: Setup Asdf
+
+description: provisions tooling
+
+runs:
+  using: 'composite'
+
+  steps:
+    - uses: actions/cache@v3
+      id: asdf-cache
+      with:
+        path: ~/.asdf
+        key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+        restore-keys: |
+          ${{ runner.os }}-asdf-
+
+    - name: asdf install
+      if: steps.asdf-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: ./setup.bash
+
+    - name: set asdf path
+      shell: bash
+      run: |
+        echo "$HOME/.asdf/bin" >> $GITHUB_PATH
+        echo "$HOME/.asdf/shims" >> $GITHUB_PATH
