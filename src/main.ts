@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+
 import {getRepo} from './repo'
 
 async function run(): Promise<void> {
